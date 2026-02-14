@@ -50,37 +50,30 @@ function hasSubmitDecision(
   );
 }
 
+function truncate(s: string, max = 500): string {
+  return s.length > max ? s.slice(0, max) + "..." : s;
+}
+
 function logSteps(
   steps: Awaited<ReturnType<typeof generateText>>["steps"],
 ): void {
   for (const step of steps) {
     for (const call of step.toolCalls) {
-      if (call.toolName === SUBMIT_TOOL) {
-        console.log(
-          `[agent] Tool call: ${call.toolName}`,
-          JSON.stringify(call.input),
-        );
-      } else {
-        console.log(`[agent] Tool call: ${call.toolName}`);
-      }
+      console.log(
+        `[agent] Tool call: ${call.toolName}`,
+        truncate(JSON.stringify(call.input)),
+      );
     }
     for (const result of step.toolResults) {
-      try {
-        const raw = (result as Record<string, unknown>).result;
-        const text = raw == null
-          ? "(no result)"
-          : typeof raw === "string"
-            ? raw.slice(0, 500)
-            : JSON.stringify(raw).slice(0, 500);
-        console.log(
-          `[agent] Tool result [${result.toolName}]: ${text}`,
-        );
-      } catch {
-        console.log(
-          `[agent] Tool result [${result.toolName}]:`,
-          JSON.stringify(result).slice(0, 500),
-        );
-      }
+      const obj = result as Record<string, unknown>;
+      console.log(
+        `[agent] Tool result [${result.toolName}] keys:`,
+        Object.keys(obj).join(", "),
+      );
+      console.log(
+        `[agent] Tool result [${result.toolName}]:`,
+        truncate(JSON.stringify(obj)),
+      );
     }
   }
 }
