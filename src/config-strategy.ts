@@ -64,6 +64,14 @@ function logSteps(
         console.log(`[agent] Tool call: ${call.toolName}`);
       }
     }
+    for (const result of step.toolResults) {
+      const text = typeof result.result === "string"
+        ? result.result.slice(0, 500)
+        : JSON.stringify(result.result).slice(0, 500);
+      console.log(
+        `[agent] Tool result [${result.toolName}]: ${text}`,
+      );
+    }
   }
 }
 
