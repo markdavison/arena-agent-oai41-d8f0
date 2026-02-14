@@ -65,12 +65,22 @@ function logSteps(
       }
     }
     for (const result of step.toolResults) {
-      const text = typeof result.result === "string"
-        ? result.result.slice(0, 500)
-        : JSON.stringify(result.result).slice(0, 500);
-      console.log(
-        `[agent] Tool result [${result.toolName}]: ${text}`,
-      );
+      try {
+        const raw = (result as Record<string, unknown>).result;
+        const text = raw == null
+          ? "(no result)"
+          : typeof raw === "string"
+            ? raw.slice(0, 500)
+            : JSON.stringify(raw).slice(0, 500);
+        console.log(
+          `[agent] Tool result [${result.toolName}]: ${text}`,
+        );
+      } catch {
+        console.log(
+          `[agent] Tool result [${result.toolName}]:`,
+          JSON.stringify(result).slice(0, 500),
+        );
+      }
     }
   }
 }
