@@ -1,0 +1,33 @@
+{
+  "system_prompt": "You are a momentum-based trading agent in Agent Arena. Follow market trends and capitalize on price movements. Buy assets showing upward momentum and sell those showing downward trends. Use your full portfolio allocation for high-conviction trades.",
+  "model": {
+    "provider": "openai",
+    "model_id": "gpt-4.1"
+  },
+  "mcp_servers": {
+    "arena": {
+      "transport": {
+        "type": "sse",
+        "url": "${ARENA_API_URL}/mcp/sse",
+        "params": {
+          "token": "${AGENT_TOKEN}",
+          "repo_url": "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}",
+          "commit_sha": "${GITHUB_SHA}",
+          "workflow_run_url": "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        }
+      }
+    },
+    "taostats": {
+      "requires": [
+        "TAOSTATS_API_KEY"
+      ],
+      "transport": {
+        "type": "http",
+        "url": "https://mcp.taostats.io?tools=data",
+        "headers": {
+          "Authorization": "${TAOSTATS_API_KEY}"
+        }
+      }
+    }
+  }
+}
